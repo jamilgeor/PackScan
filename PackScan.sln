@@ -1,0 +1,17 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackScan", "PackScan.csproj", "{4FF44DE3-ECE9-4FA4-9D28-9A2878C5EFFB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4FF44DE3-ECE9-4FA4-9D28-9A2878C5EFFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FF44DE3-ECE9-4FA4-9D28-9A2878C5EFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FF44DE3-ECE9-4FA4-9D28-9A2878C5EFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FF44DE3-ECE9-4FA4-9D28-9A2878C5EFFB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
