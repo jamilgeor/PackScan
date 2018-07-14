@@ -13,7 +13,7 @@
     <PackageLicenseUrl>https://github.com/jamilgeor/PackScan/blob/master/LICENSE</PackageLicenseUrl>
     <ToolCommandName>packscan</ToolCommandName>
     <LangVersion>latest</LangVersion>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
