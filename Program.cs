@@ -25,6 +25,8 @@ namespace PackScan
             
             var packages = BuildPackageList(options, args);
             await Process(packages, new Renderer());
+
+            Environment.Exit(packages.Any(x => x.Vulnerabilities.Any()) ? 1 : 0);
         }
 
         static IEnumerable<Package> BuildPackageList(OptionSet options, string[] args)
