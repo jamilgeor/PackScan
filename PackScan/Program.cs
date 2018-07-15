@@ -36,12 +36,14 @@ namespace PackScan
             var extras = options.Parse(args);
             if(extras.Any()) packages.AddRange(extras.Select(x => new Package { Title = x.Split("@").First(), Version = x.Split("@").Last() }));
 
-            if(!string.IsNullOrEmpty(file))
+            if(string.IsNullOrEmpty(file)) return packages;
+            
+            using(var stream = File.OpenRead(file))
             {
                 var packageLoader = GetPackageLoader(file);
                 if(packageLoader == null) return packages;
                 
-                packages.AddRange(packageLoader.GetPackages(file).Select(x => new Package { Title = x.Split("@").First(), Version = x.Split("@").Last() }));
+                packages.AddRange(packageLoader.Parse(stream).Select(x => new Package { Title = x.Split("@").First(), Version = x.Split("@").Last() }));
             }
 
             return packages;
