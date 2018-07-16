@@ -1,3 +1,5 @@
+<img src="https://travis-ci.org/jamilgeor/PackScan.svg?branch=master" alt="Build Status"/>
+
 # Pack Scan
 
 CLI tool for scanning NuGet package dependancies for known vulnerabilities.
