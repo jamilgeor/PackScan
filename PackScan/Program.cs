@@ -18,15 +18,33 @@ namespace PackScan
 
         static async Task Main(string[] args)
         {
+            var showHelp = false;
+
             var options = new OptionSet {
                 { "f|file=", "either a nuget package.config or .csproj file containing nuget references", f => file = f},
-                { "v|verbose", "output full report details for insecure packages", v => verbose = true }
+                { "v|verbose", "output full report details for insecure packages", v => verbose = true },
+                { "h|help", "show help", h => showHelp = true}
             };
+
+            if(showHelp || !args.Any())
+            {
+                ShowHelp(options);
+                return;
+            }
             
             var packages = BuildPackageList(options, args);
             await Process(packages, new Renderer());
 
             Environment.Exit(packages.Any(x => x.Vulnerabilities.Any()) ? 1 : 0);
+        }
+
+        static void ShowHelp(OptionSet options)
+        {
+            Console.WriteLine ("Usage: packscan [OPTIONS]+ nuget|file");
+            Console.WriteLine ("Show vulnerability status of a NuGet package or packages.");
+            Console.WriteLine ();
+            Console.WriteLine ("Options:");
+            options.WriteOptionDescriptions (Console.Out);
         }
 
         static IEnumerable<Package> BuildPackageList(OptionSet options, string[] args)
