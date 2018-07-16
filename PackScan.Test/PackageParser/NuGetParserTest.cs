@@ -25,6 +25,7 @@ namespace PackScan.Test.PackageParser
 
             [Theory]
             [InlineData("<?xml version=\"1.0\" encoding=\"utf-8\"?><packages><package id=")]
+            [InlineData("")]
             public void With_InValid_Stream(string data)
             {
                 using(var stream = new MemoryStream(Encoding.UTF8.GetBytes(data)))

@@ -25,6 +25,7 @@ namespace PackScan.Test.PackageParser
 
             [Theory]
             [InlineData("<Project Sdk=\"Microsoft.NET.Sdk\"><ItemGroup><PackageReference Include=\"Mono.Options\"")]
+            [InlineData("")]
             public void With_InValid_Stream(string data)
             {
                 using(var stream = new MemoryStream(Encoding.UTF8.GetBytes(data)))
