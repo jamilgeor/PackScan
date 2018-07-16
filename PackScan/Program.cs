@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using Mono.Options;
 using PackScan.Model;
-using PackScan.PackageLoader;
+using PackScan.PackageParser;
 using PackScan.PackageScanner;
 using PackScan.PackageRenderer;
 
@@ -40,7 +40,7 @@ namespace PackScan
             
             using(var stream = File.OpenRead(file))
             {
-                var packageLoader = GetPackageLoader(file);
+                var packageLoader = GetPackageParser(file);
                 if(packageLoader == null) return packages;
                 
                 packages.AddRange(packageLoader.Parse(stream).Select(x => new Package { Title = x.Split("@").First(), Version = x.Split("@").Last() }));
@@ -63,16 +63,16 @@ namespace PackScan
                     .ForEach(x => renderer.OutputFailure(x, verbose));
         }
 
-        static IPackageLoaderStrategy GetPackageLoader(string fileName)
+        static IPackageParser GetPackageParser(string fileName)
         {
             var file = new FileInfo(fileName);
 
             switch(file.Extension.ToLower())
             {
                 case ".csproj":
-                    return new CSProjLoaderStrategy();
+                    return new CSProjParser();
                 case ".config":
-                    return new NuGetLoaderStrategy();
+                    return new NuGetParser();
             }
 
             Console.Error.WriteLine("File format not supported.");

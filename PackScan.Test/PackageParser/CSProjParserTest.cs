@@ -3,33 +3,33 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Xunit;
-using PackScan.PackageLoader;
+using PackScan.PackageParser;
 
-namespace PackScan.Test.PackageLoader
+namespace PackScan.Test.PackageParser
 {
-    public class NuGetLoaderStrategyTest
+    public class CSProjParserTest
     {
         public class Parse
         {
             [Theory]
-            [InlineData("<?xml version=\"1.0\" encoding=\"utf-8\"?><packages><package id=\"Autofac\" version=\"3.5.2\" targetFramework=\"net45\" /></packages>")]
+            [InlineData("<Project Sdk=\"Microsoft.NET.Sdk\"><ItemGroup><PackageReference Include=\"Mono.Options\" Version=\"5.3.0.1\" /></ItemGroup></Project>")]
             public void With_Valid_Stream(string data)
             {
                 using(var stream = new MemoryStream(Encoding.UTF8.GetBytes(data)))
                 {
-                    var strategy = new NuGetLoaderStrategy();
+                    var strategy = new CSProjParser();
                     var result = strategy.Parse(stream);
                     Assert.True(result.Any());
                 }
             }
 
             [Theory]
-            [InlineData("<?xml version=\"1.0\" encoding=\"utf-8\"?><packages><package id=")]
+            [InlineData("<Project Sdk=\"Microsoft.NET.Sdk\"><ItemGroup><PackageReference Include=\"Mono.Options\"")]
             public void With_InValid_Stream(string data)
             {
                 using(var stream = new MemoryStream(Encoding.UTF8.GetBytes(data)))
                 {
-                    var strategy = new NuGetLoaderStrategy();
+                    var strategy = new CSProjParser();
                     Assert.Throws<ParserException>(() => strategy.Parse(stream));
                 }
             }

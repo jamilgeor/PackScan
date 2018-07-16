@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Xml;
 using System.IO;
 
-namespace PackScan.PackageLoader
+namespace PackScan.PackageParser
 {
-    public class CSProjLoaderStrategy : IPackageLoaderStrategy
+    public class CSProjParser : IPackageParser
     {
         public IEnumerable<string> Parse(Stream stream)
         {

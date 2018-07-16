@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace PackScan.PackageLoader
+namespace PackScan.PackageParser
 {
-    public interface IPackageLoaderStrategy
+    public interface IPackageParser
     {
         IEnumerable<string> Parse(Stream stream);
     }

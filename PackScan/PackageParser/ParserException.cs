@@ -1,6 +1,6 @@
 using System;
 
-namespace PackScan.PackageLoader
+namespace PackScan.PackageParser
 {
     public class ParserException : Exception
     {
