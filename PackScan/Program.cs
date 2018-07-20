@@ -13,15 +13,16 @@ namespace PackScan
 {
     class Program
     {
-        static string file;
-        static bool verbose;
+        static readonly IPackageProcessor _processor = new PackageProcessor(new Renderer());
 
         static async Task Main(string[] args)
         {
             var showHelp = false;
+            var filePath = string.Empty;
+            var verbose = false;
 
             var options = new OptionSet {
-                { "f|file=", "either a nuget package.config or .csproj file containing nuget references", f => file = f},
+                { "f|file=", "either a nuget package.config or .csproj file containing nuget references", f => filePath = f},
                 { "v|verbose", "output full report details for insecure packages", v => verbose = true },
                 { "h|help", "show help", h => showHelp = true}
             };
@@ -32,69 +33,42 @@ namespace PackScan
                 return;
             }
             
-            var packages = BuildPackageList(options, args);
-            await Process(packages, new Renderer());
+            try 
+            {
+                var packages = PackageListBuilder
+                                .Build()
+                                .WithArgs(options.Parse(args))
+                                .WithFilePath(filePath)
+                                .Create();
 
-            Environment.Exit(packages.Any(x => x.Vulnerabilities.Any()) ? 1 : 0);
+                await _processor.Process(packages, verbose);
+
+                Exit(packages.Any(x => x.Vulnerabilities.Any()) ? ExitCode.VulnerabilitiesFound : ExitCode.Success);
+            } catch (Exception ex) {
+                Console.Error.WriteLine(ex.Message);
+                Exit(ExitCode.ExceptionOccurred);
+            }
+        }
+
+        static void Exit(ExitCode code)
+        {
+            Environment.Exit((int)code);
         }
 
         static void ShowHelp(OptionSet options)
         {
-            Console.WriteLine ("Usage: packscan [OPTIONS]+ nuget|file");
-            Console.WriteLine ("Show vulnerability status of a NuGet package or packages.");
-            Console.WriteLine ();
-            Console.WriteLine ("Options:");
-            options.WriteOptionDescriptions (Console.Out);
+            Console.WriteLine("Usage: packscan [OPTIONS]+ nuget|file");
+            Console.WriteLine("Show vulnerability status of a NuGet package or packages.");
+            Console.WriteLine();
+            Console.WriteLine("Options:");
+            options.WriteOptionDescriptions(Console.Out);
         }
+    }
 
-        static IEnumerable<Package> BuildPackageList(OptionSet options, string[] args)
-        {
-            var packages = new List<Package>();
-
-            var extras = options.Parse(args);
-            if(extras.Any()) packages.AddRange(extras.Select(x => new Package { Title = x.Split("@").First(), Version = x.Split("@").Last() }));
-
-            if(string.IsNullOrEmpty(file)) return packages;
-            
-            using(var stream = File.OpenRead(file))
-            {
-                var packageLoader = GetPackageParser(file);
-                if(packageLoader == null) return packages;
-                
-                packages.AddRange(packageLoader.Parse(stream).Select(x => new Package { Title = x.Split("@").First(), Version = x.Split("@").Last() }));
-            }
-
-            return packages;
-        }
-
-        static async Task Process(IEnumerable<Package> packages, Renderer renderer)
-        {
-            var scannner = new Scanner(packages, verbose);
-            await scannner.Execute();
-
-            packages.Where(x => !x.Vulnerabilities.Any())
-                    .ToList()
-                    .ForEach(x => renderer.OutputSuccess(x));
-
-            packages.Where(x => x.Vulnerabilities.Any())
-                    .ToList()
-                    .ForEach(x => renderer.OutputFailure(x, verbose));
-        }
-
-        static IPackageParser GetPackageParser(string fileName)
-        {
-            var file = new FileInfo(fileName);
-
-            switch(file.Extension.ToLower())
-            {
-                case ".csproj":
-                    return new CSProjParser();
-                case ".config":
-                    return new NuGetParser();
-            }
-
-            Console.Error.WriteLine("File format not supported.");
-            return null;
-        }
+    public enum ExitCode
+    {
+        Success = 0,
+        VulnerabilitiesFound = 1,
+        ExceptionOccurred = 2
     }
 }
