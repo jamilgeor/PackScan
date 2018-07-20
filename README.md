@@ -55,7 +55,7 @@ packscan LibGit2Sharp@0.2.0 -v
 
 ### AUTHOR
 
-Written by Jamil Geor
+Written by <a href="https://jamilgeor.com">Jamil Geor</a>
 
 ### COPYRIGHT
 
