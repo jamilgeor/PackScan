@@ -10,6 +10,9 @@ Pack Scan makes use of the Sonatype OSS Index API to check your projects NuGet p
 ```
 dotnet tool install -g packscan
 ```
+NuGet package is available here:
+
+[https://www.nuget.org/packages/PackScan](https://www.nuget.org/packages/PackScan)
 
 ### SYNOPSIS         
 
